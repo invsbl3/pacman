@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PACMAN GAME</title>
+</head>
+<body style="margin: 0px; background-color: black;">
+    <canvas id="canvas" width="500" height="500" ></canvas>
+    <div style="display: none">
+        <img id ="pacman" src="chars/pacman.gif" alt="">
+        <img id ="ghosts" src="chars/ghosts.png" alt="">
+    </div>
+    <!--
+        here the html is responsible to load all scripts
+        and to use them...
+        so, when "game.js" wants to load something from "maps.js"
+        we don't need to import "maps.js" in "game.js"
+
+        I also putted the "game.js" as last to load because
+        we just want the game to run if everything was fine
+        I don't know if html load stuff in sequence, but at least
+        it's well organized
+        (compile/running time differs in between languages a lot.)
+    -->
+    <script src="js/map.js"></script>
+    <script src="js/foods.js"></script>
+    <script src="js/ghosts.js"></script>
+    <script src="js/pacman.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
