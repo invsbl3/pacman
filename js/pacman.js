@@ -36,7 +36,20 @@ class Pacman {
         }
 
     }
-    eat () {}
+    eat () {
+        //if pacman is in a position with food (2 in the map)
+        // eat the piece, change the map for 3
+        // which is for no food position
+        // refresh the score
+
+        // this is a diffent implementation idea
+        // compared with the original project !
+        if (map[this.upperY()][this.leftX()] == 2) {
+            map[this.upperY()][this.leftX()] = 3;
+            score++;
+        };
+    };
+
     back() {
        // remember that the canvas have
         // origin on top left, and the horizontal x
@@ -116,18 +129,21 @@ class Pacman {
             this.x + ONE_BLOCK_SIZE / 2,
             this.y + ONE_BLOCK_SIZE / 2
         );
-        context.rotate( (this.direction * 90 * Math.PI) / 180 );
+        context.rotate((this.direction * 90 * Math.PI) / 180);
         context.translate(
-            - ( this.x + ONE_BLOCK_SIZE / 2 ),
-            - ( this.y + ONE_BLOCK_SIZE / 2 )
+            -this.x - ONE_BLOCK_SIZE / 2,
+            -this.y - ONE_BLOCK_SIZE / 2
         );
         context.drawImage(
             pacmanFrames,
-            ( this.frame - 1 ) * ONE_BLOCK_SIZE,
+            (this.frame - 1) * ONE_BLOCK_SIZE,
             0,
-            ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
-            this.x, this.y,
-            this.width, this.height
+            ONE_BLOCK_SIZE,
+            ONE_BLOCK_SIZE,
+            this.x,
+            this.y,
+            this.width,
+            this.height
         );
         context.restore();
     };
@@ -155,6 +171,12 @@ class Pacman {
 
 }
 
-
+let createPacman = () => {
+    pacman = new Pacman(
+        ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
+        ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
+        PACMAN_SPEED
+    )
+};
 
 

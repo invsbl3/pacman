@@ -7,8 +7,11 @@ let WALL_OFFSET = (ONE_BLOCK_SIZE - WALL_SPACE) / 2;
 let WALL_INNER_COLOR = "black";
 
 // BUILDING THE MAP
+// the space is divided in blocks, each one rendered between screen frames.
 
-// map list: 1- for walls, P- for open space "path"
+// 1 = Wall Block
+// 2 = P = Path with Food
+// 3 = Path without Food
 // used P so in VSC you can see in blue the paths and white the walls.
 let P = 2;
 let map = [

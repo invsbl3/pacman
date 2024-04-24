@@ -5,42 +5,40 @@ let FPS = 30;
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 
-// loading files from index.html to work with
-const ghostFrames = document.getElementById("ghosts");
 
-let createPacman = () => {
-    pacman = new Pacman(
-        ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
-        ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
-        PACMAN_SPEED
-    )
-};
 
-let gameLoop = () => {
-    update();
-    draw();
-};
 
 let update = () => {
     pacman.move();
+    pacman.eat();
 };
 
 let draw = () => {
-    //render black background:
-    // Rectangle( 0, 0, canvas.width, canvas.height, "black");
-    // We are rendering the black color with CSS in the HTML
-    // <body style = "background-color: black"></body>
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    // at first, I thought this "black background"
+    // was unecessary in the draw function...
+    // them my pacman was rendered nicely, but the old pacman frames
+    // were freezed in the screen, I took 3h revising a no-flaws code...
+    // this is why we render this background, to clean the
+    // old pacman frames.
+    // try to comment or remove this and check the code again!
+    Rectangle(0, 0, canvas.width, canvas.height, "black");
     renderMap();
     drawFoods();
     pacman.draw();
 };
 
 
-
+let gameLoop = () => {
+    update();
+    draw();
+};
 
 
 let gameInterval = setInterval (gameLoop, 1000 / FPS);
 
+
+let score = 0;
 let pacman;
 createPacman();
 gameLoop();
