@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PACMAN GAME</title>
 </head>
-<body style="margin: 0px; background-color: black;">
-    <canvas id="canvas" width="500" height="500" ></canvas>
+<body style="margin: 0px; background-color: black; position: fixed;">
+    <canvas id="canvas" width="500" height="1000" style="width: 100vw"></canvas>
     <div style="display: none">
         <img id ="pacman" src="chars/pacman.gif" alt="">
         <img id ="ghosts" src="chars/ghosts.png" alt="">
@@ -23,10 +23,14 @@
         it's well organized
         (compile/running time differs in between languages a lot.)
     -->
+    <script src="js/info.js"></script>
     <script src="js/map.js"></script>
     <script src="js/foods.js"></script>
     <script src="js/ghosts.js"></script>
     <script src="js/pacman.js"></script>
+    <script src="js/distance.js"></script>
     <script src="js/game.js"></script>
+
+
 </body>
 </html>
