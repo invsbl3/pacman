@@ -5,10 +5,11 @@ const DIRECTION_UP = 3;
 const DIRECTION_DOWN = 1;
 const PACMAN_TOTAL_FRAMES = 7;
 const FIRST_FRAME = 1;
-const MAX_TIMEOUT_ANIMATION = 100;
-const PACMAN_SPEED = ONE_BLOCK_SIZE / 5;
+const PACMAN_SIZE = ONE_BLOCK_SIZE * 0.95;
 
-
+const SUPER_MODE_TIME = 8000; // 8[s] = 8000[ms]
+const FOOD_POINTS = 1;
+const SUPER_POINTS = 5;
 
 class Pacman {
     constructor ( x, y, width, height, speed) {
@@ -21,10 +22,11 @@ class Pacman {
         this.nextDirection = DIRECTION_RIGHT;
         this.frame = FIRST_FRAME;
         this.frameCount = PACMAN_TOTAL_FRAMES;
+        this.superModeOn = false;
 
         setInterval (() => {
             this.anim();
-        }, MAX_TIMEOUT_ANIMATION);
+        }, MAX_PACMAN_TIMEOUT);
     }
 
     move() {
@@ -37,18 +39,34 @@ class Pacman {
 
     }
     eat () {
-        //if pacman is in a position with food (2 in the map)
-        // eat the piece, change the map for 3
-        // which is for no food position
-        // refresh the score
+        // if pacman is in a position with food, eat the piece
+        // change the map pos to "no-food", mark score
 
         // this is a diffent implementation idea
         // compared with the original project !
-        if (map[this.upperY()][this.leftX()] == 2) {
-            map[this.upperY()][this.leftX()] = 3;
-            score++;
+
+        //little bug about pacman account "eat()" just when the border is aligned!
+        if (MAP[this.upperY()][this.leftX()] == FOOD) {
+            MAP[this.upperY()][this.leftX()] = PATH;
+            score += FOOD_POINTS;
+        }
+          // if pacman is in a position with super-food
+        // eats and get super-powers for 8s
+        else if (MAP[this.upperY()][this.leftX()] == SUPR) {
+            MAP[this.upperY()][this.leftX()] = PATH;
+            this.superMode();
+            score += SUPER_POINTS;
         };
     };
+
+    superMode() {
+        this.superModeOn = true;
+        setInterval (() => {
+            this.superModeOn = false;
+        }, SUPER_MODE_TIME);
+
+
+    }
 
     back() {
        // remember that the canvas have
@@ -57,16 +75,16 @@ class Pacman {
         // and the vertical y grows going down!
         switch(this.direction){
             case DIRECTION_LEFT:
-                this.x += this.speed;
+                this.x = Math.round((this.x + this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
                 break;
             case DIRECTION_RIGHT:
-                this.x -= this.speed;
+                this.x = Math.round((this.x - this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
                 break;
             case DIRECTION_UP:
-                this.y += this.speed;
+                this.y = Math.round((this.y + this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
                 break;
             case DIRECTION_DOWN:
-                this.y -= this.speed;
+                this.y = Math.round((this.y - this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
                 break;
         }
     }
@@ -96,10 +114,10 @@ class Pacman {
         let collided = false;
         // if touches a wall in any side, collided?
         if(
-            map[this.upperY()][this.leftX()] == 1 ||
-            map[this.downY()][this.leftX()] == 1 ||
-            map[this.upperY()][this.rightX()] == 1 ||
-            map[this.downY()][this.rightX()] == 1
+            MAP[this.upperY()][this.leftX()] == 1 ||
+            MAP[this.downY()][this.leftX()] == 1 ||
+            MAP[this.upperY()][this.rightX()] == 1 ||
+            MAP[this.downY()][this.rightX()] == 1
         ) {
             collided =  true;
         }
@@ -124,17 +142,17 @@ class Pacman {
         };
     };
     draw() {
-        context.save();
-        context.translate(
+        ctx.save();
+        ctx.translate(
             this.x + ONE_BLOCK_SIZE / 2,
             this.y + ONE_BLOCK_SIZE / 2
         );
-        context.rotate((this.direction * 90 * Math.PI) / 180);
-        context.translate(
+        ctx.rotate((this.direction * 90 * Math.PI) / 180);
+        ctx.translate(
             -this.x - ONE_BLOCK_SIZE / 2,
             -this.y - ONE_BLOCK_SIZE / 2
         );
-        context.drawImage(
+        ctx.drawImage(
             pacmanFrames,
             (this.frame - 1) * ONE_BLOCK_SIZE,
             0,
@@ -145,7 +163,20 @@ class Pacman {
             this.width,
             this.height
         );
-        context.restore();
+        ctx.restore();
+    };
+
+    calcDistancePacman(){
+        let pacmanX = Math.round(this.x / ONE_BLOCK_SIZE);
+        let pacmanY = Math.round(this.y / ONE_BLOCK_SIZE);
+        calcDistance(pacmanX, pacmanY);
+    }
+
+    renderDistancePacman () {
+        const OFFSET_PM = ONE_BLOCK_SIZE * 0;
+        let pacmanX = Math.round(this.x / ONE_BLOCK_SIZE);
+        let pacmanY = Math.round(this.y / ONE_BLOCK_SIZE);
+        renderDistance(calcDistance(pacmanX, pacmanY), OFFSET_PM, "red");
     };
 
     upperY() {
@@ -174,7 +205,7 @@ class Pacman {
 let createPacman = () => {
     pacman = new Pacman(
         ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
-        ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
+        PACMAN_SIZE, PACMAN_SIZE,
         PACMAN_SPEED
     )
 };
