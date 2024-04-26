@@ -2,19 +2,16 @@ const FPS = 30;
 const GAME_INTERVAL = 1000 / FPS;
 const MAX_PACMAN_TIMEOUT = Math.round( GAME_INTERVAL / PACMAN_TOTAL_FRAMES);
 
-
 // loading Canvas to work with
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
-
 
 let update = () => {
     pacman.move();
     pacman.eat();
     updateGhosts();
-    console.log("pacman x: ",Math.round(pacman.x/ONE_BLOCK_SIZE),
-    "pacman y: ", Math.round(pacman.y/ONE_BLOCK_SIZE));
+   //  console.log("pacman x: ",Math.round(pacman.x/ONE_BLOCK_SIZE),
+    // "pacman y: ", Math.round(pacman.y/ONE_BLOCK_SIZE));
 };
 
 let draw = () => {
@@ -33,8 +30,6 @@ let draw = () => {
     drawFoods();
     pacman.draw();
     drawGhosts();
-    ghosts[1].renderDistanceGhost();
-    ghosts[1].chasePacman();
 };
 
 let gameLoop = () => {
@@ -52,19 +47,3 @@ createPacman();
 let ghosts = [];
 createGhosts();
 gameLoop();
-
-
-
-window.addEventListener("keydown", (event) => {
-    let k = event.keyCode;
-
-    setTimeout( () => {
-        if ( k == 37 || k == 65 ) { pacman.nextDirection = DIRECTION_LEFT;}
-        else if ( k == 38 || k == 87 ) {pacman.nextDirection = DIRECTION_UP;}
-        else if ( k == 39 || k == 68 ) {pacman.nextDirection = DIRECTION_RIGHT;}
-        else if ( k == 40 || k == 83 ) {pacman.nextDirection = DIRECTION_DOWN;}
-    })
-})
-
-
-

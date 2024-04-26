@@ -16,19 +16,20 @@
         and to use them...
         so, when "game.js" wants to load something from "maps.js"
         we don't need to import "maps.js" in "game.js"
-
-        I also putted the "game.js" as last to load because
-        we just want the game to run if everything was fine
-        I don't know if html load stuff in sequence, but at least
-        it's well organized
+        but HTML loads in sequence, so, if "first_script.js"needs
+        something from "last_script.js", we have to re-aranje things.
+        
+        search about (js - hoisting), took me a long time to debug
+        things related to js running/compile/execution time;
         (compile/running time differs in between languages a lot.)
     -->
-    <script src="js/info.js"></script>
     <script src="js/map.js"></script>
     <script src="js/foods.js"></script>
-    <script src="js/ghosts.js"></script>
     <script src="js/pacman.js"></script>
+    <script src="js/ghost.js"></script>
     <script src="js/distance.js"></script>
+    <script src="js/info.js"></script>
+    <script src="js/control.js"></script>
     <script src="js/game.js"></script>
 
 

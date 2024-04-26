@@ -1,11 +1,11 @@
 const pacmanFrames = document.getElementById("pacman");
-const DIRECTION_RIGHT = 4;
-const DIRECTION_LEFT = 2;
-const DIRECTION_UP = 3;
-const DIRECTION_DOWN = 1;
+
 const PACMAN_TOTAL_FRAMES = 7;
 const FIRST_FRAME = 1;
+const PACMAN_SPEED = ONE_BLOCK_SIZE / 5;
+
 const PACMAN_SIZE = ONE_BLOCK_SIZE * 0.95;
+
 
 const SUPER_MODE_TIME = 8000; // 8[s] = 8000[ms]
 const FOOD_POINTS = 1;
@@ -23,6 +23,8 @@ class Pacman {
         this.frame = FIRST_FRAME;
         this.frameCount = PACMAN_TOTAL_FRAMES;
         this.superModeOn = false;
+        this.px = Math.round(this.x / ONE_BLOCK_SIZE);
+        this.py = Math.round(this.y / ONE_BLOCK_SIZE);
 
         setInterval (() => {
             this.anim();
@@ -35,9 +37,9 @@ class Pacman {
         if (this.wallHit()){
             this.back();
             return;
-        }
+        };
+    };
 
-    }
     eat () {
         // if pacman is in a position with food, eat the piece
         // change the map pos to "no-food", mark score
@@ -109,7 +111,8 @@ class Pacman {
                 this.y += this.speed;
                 break;
         }
-    }
+    };
+    
     wallHit() {
         let collided = false;
         // if touches a wall in any side, collided?
@@ -122,7 +125,7 @@ class Pacman {
             collided =  true;
         }
         return collided;
-    }
+    };
     ghostHit() {};
     anim() {
         this.frame  = this.frame == this.frameCount ? 1: this.frame + 1;
@@ -209,5 +212,3 @@ let createPacman = () => {
         PACMAN_SPEED
     )
 };
-
-
