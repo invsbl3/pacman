@@ -117,7 +117,7 @@ let findPath = (tx, ty, sx, sy) => {
                 return true;
             };
     };
-    path.shift()
+    if(path.length > 0){path.shift();};
     return path;
 };
 
