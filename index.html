@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel='stylesheet' type='text/css'>
+
+
     <title>PACMAN GAME</title>
 </head>
-<body style="margin: 0px; background-color: black; position: fixed;">
-    <canvas id="canvas" width="1000" height="1000"></canvas>
+<body id="scream"
+    style="min-height: 100vh; max-width: 100vw;
+    position: fixed;
+    background-color: black;">
+    <canvas id="canvas" width="1080" height="1920"></canvas>
     <div style="display: none">
         <img id ="pacman" src="chars/pacman.gif" alt="">
         <img id ="ghosts" src="chars/ghosts.png" alt="">
@@ -26,10 +34,11 @@
     <script src="js/map.js"></script>
     <script src="js/foods.js"></script>
     <script src="js/pacman.js"></script>
-    <script src="js/ghost.js"></script>
+    <script src="js/ghosts.js"></script>
     <script src="js/distance.js"></script>
     <script src="js/info.js"></script>
     <script src="js/control.js"></script>
+    <script src="js/events.js"></script>
     <script src="js/game.js"></script>
 
 
