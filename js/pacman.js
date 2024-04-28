@@ -1,148 +1,34 @@
 const pacmanFrames = document.getElementById("pacman");
 
-const PACMAN_TOTAL_FRAMES = 7;
-const FIRST_FRAME = 1;
+const PACMAN_DIMENSIONS = [ONE_BLOCK_SIZE, ONE_BLOCK_SIZE];
+const START_POSITION = [ONE_BLOCK_SIZE, ONE_BLOCK_SIZE];
 const PACMAN_SPEED = ONE_BLOCK_SIZE / 5;
-
-const PACMAN_SIZE = ONE_BLOCK_SIZE * 0.95;
-
-
+const INITIAL_FRAME = 1;
+const PACMAN_TOTAL_FRAMES = 7;
+const FRUIT_POINTS = 5;
 const SUPER_MODE_TIME = 8000; // 8[s] = 8000[ms]
 const FOOD_POINTS = 1;
-const SUPER_POINTS = 5;
+const SUPER_FOOD_POINTS = 5;
+
+
+//const COLORS = ["white", "blue", "red", "green", "yellow", "purple", "cyan"];
 
 class Pacman {
-    constructor ( x, y, width, height, speed) {
-        this.x = x;
-        this.y = y;
+    constructor(posX, posY, width, height, direction, speed, color) {
+        this.x = posX;
+        this.y = posY;
         this.width = width;
         this.height = height;
+        this.direction = direction;
         this.speed = speed;
-        this.direction = DIRECTION_RIGHT;
-        this.nextDirection = DIRECTION_RIGHT;
-        this.frame = FIRST_FRAME;
+        this.frame = INITIAL_FRAME;
         this.frameCount = PACMAN_TOTAL_FRAMES;
+        this.color = color;
+        this.nextDirection = direction;
         this.superModeOn = false;
-        this.px = Math.round(this.x / ONE_BLOCK_SIZE);
-        this.py = Math.round(this.y / ONE_BLOCK_SIZE);
-
-        setInterval (() => {
+        setInterval(() => {
             this.anim();
         }, MAX_PACMAN_TIMEOUT);
-    }
-
-    move() {
-        this.userControl();
-        this.forward();
-        if (this.wallHit()){
-            this.back();
-            return;
-        };
-    };
-
-    eat () {
-        // if pacman is in a position with food, eat the piece
-        // change the map pos to "no-food", mark score
-
-        // this is a diffent implementation idea
-        // compared with the original project !
-
-        //little bug about pacman account "eat()" just when the border is aligned!
-        if (MAP[this.upperY()][this.leftX()] == FOOD) {
-            MAP[this.upperY()][this.leftX()] = PATH;
-            score += FOOD_POINTS;
-        }
-          // if pacman is in a position with super-food
-        // eats and get super-powers for 8s
-        else if (MAP[this.upperY()][this.leftX()] == SUPR) {
-            MAP[this.upperY()][this.leftX()] = PATH;
-            this.superMode();
-            score += SUPER_POINTS;
-        };
-    };
-
-    superMode() {
-        this.superModeOn = true;
-        setInterval (() => {
-            this.superModeOn = false;
-        }, SUPER_MODE_TIME);
-
-
-    }
-
-    back() {
-       // remember that the canvas have
-        // origin on top left, and the horizontal x
-        // grows to the left
-        // and the vertical y grows going down!
-        switch(this.direction){
-            case DIRECTION_LEFT:
-                this.x = Math.round((this.x + this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
-                break;
-            case DIRECTION_RIGHT:
-                this.x = Math.round((this.x - this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
-                break;
-            case DIRECTION_UP:
-                this.y = Math.round((this.y + this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
-                break;
-            case DIRECTION_DOWN:
-                this.y = Math.round((this.y - this.speed)/ONE_BLOCK_SIZE)*ONE_BLOCK_SIZE;
-                break;
-        }
-    }
-
-
-    forward() {
-        // remember that the canvas have
-        // origin on top left, and the horizontal x
-        // grows to the left
-        // and the vertical y grows going down!
-        switch(this.direction){
-            case DIRECTION_LEFT:
-                this.x -= this.speed;
-                break;
-            case DIRECTION_RIGHT:
-                this.x += this.speed;
-                break;
-            case DIRECTION_UP:
-                this.y -= this.speed;
-                break;
-            case DIRECTION_DOWN:
-                this.y += this.speed;
-                break;
-        }
-    };
-    
-    wallHit() {
-        let collided = false;
-        // if touches a wall in any side, collided?
-        if(
-            MAP[this.upperY()][this.leftX()] == 1 ||
-            MAP[this.downY()][this.leftX()] == 1 ||
-            MAP[this.upperY()][this.rightX()] == 1 ||
-            MAP[this.downY()][this.rightX()] == 1
-        ) {
-            collided =  true;
-        }
-        return collided;
-    };
-    ghostHit() {};
-    anim() {
-        this.frame  = this.frame == this.frameCount ? 1: this.frame + 1;
-    };
-    userControl() {
-        if (this.direction == this.nextDirection) return;
-
-        let tempDirection = this.direction;
-        this.direction = this.nextDirection;
-        this.forward();
-        if (this.wallHit()){
-            this.back();
-            this.direction = tempDirection;
-        }
-        else {
-            this.back();
-        };
     };
     draw() {
         ctx.save();
@@ -168,47 +54,128 @@ class Pacman {
         );
         ctx.restore();
     };
+    anim() {
+        this.frame = this.frame == this.frameCount ? 1 : this.frame + 1;
+    };
+    move() {
+        this.changeDirectionIfPossible();
+        this.forward();
+        if (this.collided()) {
+            this.undoForward();
+            return;
+        }
+        else {
+            this.eat();
+        };
 
-    calcDistancePacman(){
+    };
+    changeDirectionIfPossible() {
+        if (this.direction == this.nextDirection) return;
+        let tempDirection = this.direction;
+        this.direction = this.nextDirection;
+        this.forward();
+        if (this.collided()) {
+            this.undoForward();
+            this.direction = tempDirection;
+        } else {
+            this.undoForward();
+        }
+    }
+    forward() {
+        switch (this.direction) {
+            case DIRECTION_LEFT:
+                this.x -= this.speed;
+                break;
+            case DIRECTION_UP:
+                this.y -= this.speed;
+                break;
+            case DIRECTION_RIGHT:
+                this.x += this.speed;
+                break;
+            case DIRECTION_DOWN:
+                this.y += this.speed;
+                break;
+        };
+    };
+    undoForward() {
+        switch (this.direction) {
+            case DIRECTION_LEFT:
+                this.x += this.speed;
+                break;
+            case DIRECTION_UP:
+                this.y += this.speed;
+                break;
+            case DIRECTION_RIGHT:
+                this.x -= this.speed;
+                break;
+            case DIRECTION_DOWN:
+                this.y -= this.speed;
+                break;
+        };
+    };
+    collided() {
+        let iscollided = false;
+        let u = Math.floor((this.y) / ONE_BLOCK_SIZE);
+        let d = Math.floor((this.y + this.height) / ONE_BLOCK_SIZE - 0.01);
+        let l = Math.floor((this.x) / ONE_BLOCK_SIZE);
+        let r = Math.floor((this.x + this.width) / ONE_BLOCK_SIZE - 0.01);
+        if (//could use ^XOR instead of ||OR but in this game no 2-collisions
+            // should occur at a same move.
+            MAP[u][l] == WALL ||
+            MAP[u][r] == WALL ||
+            MAP[d][l] == WALL ||
+            MAP[d][r] == WALL
+        ) {
+            iscollided = true;
+        }
+        return iscollided;
+    };
+    eat() {
+        let u = Math.floor((this.y) / ONE_BLOCK_SIZE);
+        let l = Math.floor((this.x) / ONE_BLOCK_SIZE);
+        if (MAP[u][l] == FOOD) {
+            score += FRUIT_POINTS;
+            MAP[u][l] = PATH;
+        };
+        if (MAP[u][l] == SUPR) {
+            score += SUPER_FOOD_POINTS;
+            MAP[u][l] = PATH;
+            this.superMode();
+        };
+    };
+    superMode() {
+        this.superModeOn = true;
+        setInterval(() => {
+            this.superModeOn = false;
+        }, SUPER_MODE_TIME);
+    };
+
+
+
+    calcDistancePacman() {
         let pacmanX = Math.round(this.x / ONE_BLOCK_SIZE);
         let pacmanY = Math.round(this.y / ONE_BLOCK_SIZE);
         calcDistance(pacmanX, pacmanY);
     }
 
-    renderDistancePacman () {
+    renderDistancePacman() {
         const OFFSET_PM = ONE_BLOCK_SIZE * 0;
         let pacmanX = Math.round(this.x / ONE_BLOCK_SIZE);
         let pacmanY = Math.round(this.y / ONE_BLOCK_SIZE);
         renderDistance(calcDistance(pacmanX, pacmanY), OFFSET_PM, "red");
     };
 
-    upperY() {
-        // takes the upper point height of the char
-        // returns the equivalent integer [i] in the map
-        return parseInt(this.y / ONE_BLOCK_SIZE);
-    };
-    downY() {
-        // takes a "close to the bottom border" point of the char
-        // returns the equivalent integer [i] in the map
-        return parseInt( (this.y + 0.99 * ONE_BLOCK_SIZE) / ONE_BLOCK_SIZE );
-    };
-    leftX() {
-        // takes the left point height of the char
-        // returns the equivalent integer [j] in the map
-        return parseInt(this.x / ONE_BLOCK_SIZE);
-    };
-    rightX() {
-        // takes a "close to the right border" point of the char
-        // returns the equivalent integer [j] in the map
-        return parseInt( (this.x + 0.99 * ONE_BLOCK_SIZE) / ONE_BLOCK_SIZE );
-    };
 
-}
+};
 
 let createPacman = () => {
-    pacman = new Pacman(
-        ONE_BLOCK_SIZE, ONE_BLOCK_SIZE,
-        PACMAN_SIZE, PACMAN_SIZE,
-        PACMAN_SPEED
-    )
+    pacman = new Pacman(START_POSITION[0], START_POSITION[1],
+        PACMAN_DIMENSIONS[0], PACMAN_DIMENSIONS[1],
+        DIRECTION_RIGHT, PACMAN_SPEED, COLORS[1]
+    );
 };
+
+let drawPacman = () => {
+    pacman.draw();
+    //pacman.renderDistancePacman();
+}

@@ -42,7 +42,7 @@ let calcDistance = (sCol, sRow) => {
                     nextCheck.push([x, y]);
                 }
                 else if (MAP[x][y] == WALL) {
-                    distance[x][y] = -1;
+                    distance[x][y] = -20;
                 };
             };
         };
@@ -72,7 +72,7 @@ let findPath = (tx, ty, sx, sy) => {
     let max = distanceMap[sy][sx];
     let actual_distance = max;
 
-    while (actual_distance > 1 ){
+    while (actual_distance > 0 ){
         checkNeighbours(actual_point[1], actual_point[0], actual_distance);
     };
 
@@ -113,17 +113,17 @@ let findPath = (tx, ty, sx, sy) => {
             {
                 path.push([y,x]);
                 actual_point = [y,x];
-                actual_distance = distanceMap[y][x];
+                actual_distance -= 1;
                 return true;
             };
     };
-    if(path.length > 0){path.shift();};
+    if(path.length > 1){path.shift();};
     return path;
 };
 
 let renderPath = (path, color) => {
-    let PATH_RECT = ONE_BLOCK_SIZE * 0.5;
-    let PATH_RECT_OFFSET = (ONE_BLOCK_SIZE  - PATH_RECT) / 2;
+    const PATH_RECT = ONE_BLOCK_SIZE * 0.4;
+    const PATH_RECT_OFFSET = (ONE_BLOCK_SIZE  - PATH_RECT) / 2;
     for (let i = 0; i < path.length; i++) {
         Rectangle (path[i][1] * ONE_BLOCK_SIZE + PATH_RECT_OFFSET,
             path[i][0] * ONE_BLOCK_SIZE + PATH_RECT_OFFSET,

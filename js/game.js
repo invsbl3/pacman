@@ -1,16 +1,19 @@
 const FPS = 30;
 const GAME_INTERVAL = 1000 / FPS;
-const MAX_PACMAN_TIMEOUT = Math.round( GAME_INTERVAL / PACMAN_TOTAL_FRAMES);
+const MAX_PACMAN_TIMEOUT = Math.round(GAME_INTERVAL / PACMAN_TOTAL_FRAMES);
 
 // loading Canvas to work with
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+
+
+
 let update = () => {
     pacman.move();
     pacman.eat();
     updateGhosts();
-   //  console.log("pacman x: ",Math.round(pacman.x/ONE_BLOCK_SIZE),
+    //  console.log("pacman x: ",Math.round(pacman.x/ONE_BLOCK_SIZE),
     // "pacman y: ", Math.round(pacman.y/ONE_BLOCK_SIZE));
 };
 
@@ -28,7 +31,7 @@ let draw = () => {
     drawSuper();
     renderMap();
     drawFoods();
-    pacman.draw();
+    drawPacman();
     drawGhosts();
 };
 
@@ -39,11 +42,12 @@ let gameLoop = () => {
 
 
 
-let gameInterval = setInterval (gameLoop, GAME_INTERVAL);
+
 let score = 0;
 let pacman;
 createPacman();
 
 let ghosts = [];
 createGhosts();
+let gameInterval = setInterval(gameLoop, GAME_INTERVAL);
 gameLoop();

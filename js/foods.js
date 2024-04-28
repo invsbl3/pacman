@@ -8,6 +8,7 @@ SUPER_FOOD_COLOR = "green";
 SUPER_FOOD_SKIN_COLOR = "white";
 
 let drawFoods = () => {
+    let foodcount = 0;
     for ( let i = 0; i < MAP.length; i++ ) {
         for ( j = 0; j < MAP[i].length; j++ ) {
             if ( MAP[i][j] == FOOD) {
@@ -18,6 +19,7 @@ let drawFoods = () => {
                     FOOD_SIZE,
                     FOOD_COLOR
                 );
+                foodcount += 1;
             }
             else if (MAP[i][j] == SUPR) {
                 ctx.beginPath();
@@ -32,6 +34,7 @@ let drawFoods = () => {
                 ctx.lineWidth = 2.5;
                 ctx.strokeStyle = SUPER_FOOD_SKIN_COLOR;
                 ctx.stroke();
+                foodcount += 1;
             };
         };
     };
