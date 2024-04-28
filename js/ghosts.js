@@ -41,6 +41,7 @@ class Ghost {
         this.width = width;
         this.height = height;
         this.direction = DIRECTION_RIGHT;
+        this.nextDirection = DIRECTION_RIGHT;
         this.speed = speed;
         this.xspeed = speed;
         this.yspeed = speed;
@@ -136,7 +137,7 @@ class Ghost {
             this.path.shift();
         };
     };
-    nextDirection() {
+    chooseNextDirection() {
         let px = this.path[0][1] * ONE_BLOCK_SIZE;
         let py = this.path[0][0] * ONE_BLOCK_SIZE;
         let gx = this.x;
@@ -217,10 +218,9 @@ class Ghost {
         return iscollided;
     };
 
-
-    move() {
+    moveAlone() {
         this.chooseFollowTarget();
-        this.nextDirection();
+        this.chooseNextDirection();
         this.forward();
         if (this.collided()) {
             this.undoForward();
@@ -228,10 +228,10 @@ class Ghost {
         this.reachedNextPath();
     };
 
-
+    // moveUser(){};
 
     pacmanNear() {
-        this.pointNear(pacman.x, pacman.y)
+        return this.pointNear(pacman.x, pacman.y);
     };
     pointNear(pointX, pointY) {
         let pointNear = false;
@@ -249,6 +249,7 @@ class Ghost {
         if (this.pacmanNear()) {
             this.target = pacman;
             this.findPath();
+            //console.log("pacman near to ", this.name, this.color);
         };
         if (!this.pacmanNear() && this.target == pacman) {
             this.randomTarget();
@@ -297,9 +298,11 @@ class Ghost {
             ctx.restore();
         };
         if (pacman.superModeOn) {
+            ctx.save();
             ctx.rect(this.x, this.y, this.width, this.height, CHASED_GHOST_COLOR);
             ctx.strokeStyle = "white";
             ctx.stroke();
+            ctx.restore();
         };
     };
 
@@ -351,7 +354,7 @@ let drawGhosts = () => {
 };
 let updateGhosts = () => {
     for (let i = 0; i < ghosts.length; i++) {
-        ghosts[i].move();
+        ghosts[i].moveAlone();
     }
 };
 

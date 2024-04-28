@@ -6,15 +6,19 @@ const MAX_PACMAN_TIMEOUT = Math.round(GAME_INTERVAL / PACMAN_TOTAL_FRAMES);
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-
-
+gameStart();
+createPacman();
+createGhosts();
 
 let update = () => {
-    pacman.move();
-    pacman.eat();
+    updatePacman();
     updateGhosts();
-    //  console.log("pacman x: ",Math.round(pacman.x/ONE_BLOCK_SIZE),
-    // "pacman y: ", Math.round(pacman.y/ONE_BLOCK_SIZE));
+    if (pacman.ghosted() && !pacman.superModeOn) {
+        restartGame();
+    };
+    if (score > 500) {
+        drawWinner();
+    };
 };
 
 let draw = () => {
@@ -28,6 +32,7 @@ let draw = () => {
     // try to comment or remove this and check the code again!
     Rectangle(0, 0, canvas.width, canvas.height, "black");
     drawScore();
+    drawLives();
     drawSuper();
     renderMap();
     drawFoods();
@@ -36,18 +41,9 @@ let draw = () => {
 };
 
 let gameLoop = () => {
-    update();
     draw();
+    update();
 };
 
-
-
-
-let score = 0;
-let pacman;
-createPacman();
-
-let ghosts = [];
-createGhosts();
 let gameInterval = setInterval(gameLoop, GAME_INTERVAL);
 gameLoop();

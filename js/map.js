@@ -80,12 +80,9 @@ let Rectangle = (x, y, width, height, color) => {
 
 
 let renderMap = () => {
-    let foodcount = 0;
     for (let i = 0; i < MAP.length; i++){
         // here we are looking one row after another...
         for (let j = 0; j < MAP[i].length; j++){
-            if (MAP[i][j]== FOOD){foodcount ++;};
-
             // here we are looking for a element in a choosen row
             // here we are in an element j of a row i of our map.
             // we need to check if it is a wall or a path
@@ -163,5 +160,4 @@ let renderMap = () => {
             };
         };
     };
-    if (foodcount == 0 ){MAP = newMap(); console.log("acabou a comida")};
 };

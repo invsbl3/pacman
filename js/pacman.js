@@ -5,13 +5,7 @@ const START_POSITION = [ONE_BLOCK_SIZE, ONE_BLOCK_SIZE];
 const PACMAN_SPEED = ONE_BLOCK_SIZE / 5;
 const INITIAL_FRAME = 1;
 const PACMAN_TOTAL_FRAMES = 7;
-const FRUIT_POINTS = 5;
 const SUPER_MODE_TIME = 8000; // 8[s] = 8000[ms]
-const FOOD_POINTS = 1;
-const SUPER_FOOD_POINTS = 5;
-
-
-//const COLORS = ["white", "blue", "red", "green", "yellow", "purple", "cyan"];
 
 class Pacman {
     constructor(posX, posY, width, height, direction, speed, color) {
@@ -67,7 +61,6 @@ class Pacman {
         else {
             this.eat();
         };
-
     };
     changeDirectionIfPossible() {
         if (this.direction == this.nextDirection) return;
@@ -130,6 +123,20 @@ class Pacman {
         }
         return iscollided;
     };
+    ghosted() {
+        let isGhosted = false;
+        let py = Math.floor((this.y) / ONE_BLOCK_SIZE);
+        let px = Math.floor((this.x) / ONE_BLOCK_SIZE);
+        for (let i = 0; i < ghosts.length; i++) {
+            let gy = Math.floor(ghosts[i].y / ONE_BLOCK_SIZE);
+            let gx = Math.floor(ghosts[i].x / ONE_BLOCK_SIZE);
+            if (gx == px && gy == py) {
+                isGhosted = true;
+                // console.log("ghostedby: ", ghosts[i].name, ghosts[i].color);
+            }
+        };
+        return isGhosted;
+    };
     eat() {
         let u = Math.floor((this.y) / ONE_BLOCK_SIZE);
         let l = Math.floor((this.x) / ONE_BLOCK_SIZE);
@@ -145,27 +152,21 @@ class Pacman {
     };
     superMode() {
         this.superModeOn = true;
-        setInterval(() => {
+        setTimeout(() => {
             this.superModeOn = false;
         }, SUPER_MODE_TIME);
     };
-
-
-
     calcDistancePacman() {
         let pacmanX = Math.round(this.x / ONE_BLOCK_SIZE);
         let pacmanY = Math.round(this.y / ONE_BLOCK_SIZE);
         calcDistance(pacmanX, pacmanY);
-    }
-
+    };
     renderDistancePacman() {
         const OFFSET_PM = ONE_BLOCK_SIZE * 0;
         let pacmanX = Math.round(this.x / ONE_BLOCK_SIZE);
         let pacmanY = Math.round(this.y / ONE_BLOCK_SIZE);
         renderDistance(calcDistance(pacmanX, pacmanY), OFFSET_PM, "red");
     };
-
-
 };
 
 let createPacman = () => {
@@ -175,7 +176,13 @@ let createPacman = () => {
     );
 };
 
+let updatePacman = () => {
+    pacman.move();
+    pacman.eat();
+    pacman.ghosted();
+};
+
 let drawPacman = () => {
     pacman.draw();
     //pacman.renderDistancePacman();
-}
+};
