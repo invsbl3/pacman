@@ -1,5 +1,7 @@
 # PACMAN GAME
 
+#[!!PLAY NOW!!](https://invsbl3.github.io/pacman/)
+
 ## Features to put:
 
 1. menu with modes
@@ -24,7 +26,7 @@
   - [ ] ghosts eyes pointing to pacman
   - [ ] fruits that grow/shrink and glow/fade in 2s cycles or something...
   - [ ] rounded border for map walls
-  
+
 5. algos and routines
   - [ ] that "side-screen-warp" in the middle path
   - [ ] some modes for the ghost-chases (like a dummie, a chiclet follower, a side guy, etc...)
